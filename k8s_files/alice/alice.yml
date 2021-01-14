@@ -64,15 +64,16 @@ items:
             mountPath: "/app/network-parameters"
             subPath: "network-parameters"
             readOnly: true
-          - name: node-logs
-            mountPath: "/app/logs"
+          - name: node-log4j
+            mountPath: "/app/logs/log4j2.xml"
+            subPath: "log4j2.xml"
             readOnly: false
           - name: node-certificates
             mountPath: "/app/certificates"
             readOnly: true
           - name: additional-node-infos
             mountPath: "/app/additional-node-infos"
-            readOnly: true
+            readOnly: false
           - name: cordapps
             mountPath: "/app/cordapps/membership-service-1.0.jar"
             subPath: "membership-service-1.0.jar"
@@ -127,6 +128,6 @@ items:
         - name: cordapps-app
           secret:
             secretName: alice-cordapps-app
-        - name: node-logs
+        - name: node-log4j
           secret:
-            secretName: alice-node-logs
+            secretName: alice-node-log4j
