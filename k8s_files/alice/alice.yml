@@ -1,0 +1,105 @@
+apiVersion: v1
+kind: List
+items:
+- kind: Service
+  apiVersion: v1
+  metadata:
+    name: alice
+  spec:
+    selector:
+      app: alice
+    ports:
+    - name: "10001"
+      port: 10001
+      targetPort: 10001
+    - name: "10002"
+      port: 10002
+      targetPort: 10002
+    - name: "10003"
+      port: 10003
+      targetPort: 10003
+    - name: "10004"
+      port: 10004
+      targetPort: 10004
+- kind: Deployment
+  apiVersion: extensions/v1beta1
+  metadata:
+    name: alice
+    labels:
+      app: alice
+  spec:
+    replicas: 1
+    strategy:
+      type: Recreate
+      rollingUpdate: null
+    template:
+      metadata:
+        labels:
+          app: alice
+      spec:
+        hostname: alice
+        containers:
+        - name: alice
+          image: kirito37/corda4.3_image
+          resources:
+            limits:
+              memory: "5Gi"
+            requests:
+              memory: "3Gi"
+          ports:
+            - containerPort: 10001
+            - containerPort: 10002
+            - containerPort: 10003
+            - containerPort: 10004
+          volumeMounts:
+          - name: node-config
+            mountPath: "/app/node.conf"
+            subPath: "node.conf"
+            readOnly: true
+          - name: node-config
+            mountPath: "/app/network-parameters"
+            subPath: "network-parameters"
+            readOnly: true
+          - name: node-config
+            mountPath: "/app/logs"
+            readOnly: true
+          - name: node-certificates
+            mountPath: "/app/certificates"
+            readOnly: true
+          - name: additional-node-infos
+            mountPath: "/app/additional-node-infos"
+            readOnly: true
+          - name: cordapps
+            mountPath: "/app/cordapps/membership-service-1.0.jar"
+            subPath: "membership-service-1.0.jar"
+            readOnly: true
+          - name: cordapps
+            mountPath: "/app/cordapps/membership-service-contracts-and-states-1.0.jar"
+            subPath: "membership-service-contracts-and-states-1.0.jar"
+            readOnly: true
+          - name: cordapps
+            mountPath: "/app/cordapps/ping-pong-0.1.jar"
+            subPath: "ping-pong-0.1.jar"
+            readOnly: true
+          - name: cordapps
+            mountPath: "/app/cordapps/config/membership-service.conf"
+            subPath: "membership-service.conf"
+            readOnly: true
+          livenessProbe:
+            tcpSocket:
+              port: 10002
+            initialDelaySeconds: 15
+            periodSeconds: 20
+        volumes:
+        - name: node-config
+          secret:
+            secretName: alice-config
+        - name: node-certificates
+          secret:
+            secretName: alice-keystore
+        - name: additional-node-infos
+          secret:
+            secretName: alice-additional-node-infos
+        - name: cordapps
+          secret:
+            secretName: alice-cordapps
