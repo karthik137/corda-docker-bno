@@ -73,15 +73,23 @@ items:
             mountPath: "/app/cordapps/membership-service-1.0.jar"
             subPath: "membership-service-1.0.jar"
             readOnly: true
-          - name: cordapps
+          - name: cordapps-mem
+            mountPath: "/app/cordapps/membership-service-2.0.jar"
+            subPath: "membership-service-1.0.jar"
+            readOnly: true
+          - name: cordapps-mem
             mountPath: "/app/cordapps/membership-service-contracts-and-states-1.0.jar"
             subPath: "membership-service-contracts-and-states-1.0.jar"
             readOnly: true
-          - name: cordapps
+          - name: cordapps-state-contract
+            mountPath: "/app/cordapps/membership-service-contracts-and-states-2.0.jar"
+            subPath: "membership-service-contracts-and-states-1.0.jar"
+            readOnly: true
+          - name: cordapps-app
             mountPath: "/app/cordapps/ping-pong-0.1.jar"
             subPath: "ping-pong-0.1.jar"
             readOnly: true
-          - name: cordapps
+          - name: cordapps-app-config
             mountPath: "/app/cordapps/config/membership-service.conf"
             subPath: "membership-service.conf"
             readOnly: true
@@ -103,3 +111,15 @@ items:
         - name: cordapps
           secret:
             secretName: alice-cordapps
+        - name: cordapps-mem
+          secret:
+            secretName: alice-cordapps-mem
+        - name: cordapps-state-contract
+          secret:
+            secretName: alice-cordapps-state-contract
+        - name: cordapps-app-config
+          secret:
+            secretName: alice-cordapps-app-config
+        - name: cordapps-app
+          secret:
+            secretName: alice-cordapps-app
