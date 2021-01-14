@@ -1,3 +1,4 @@
+
 apiVersion: v1
 kind: List
 items:
@@ -22,13 +23,16 @@ items:
       port: 10004
       targetPort: 10004
 - kind: Deployment
-  apiVersion: extensions/v1beta1
+  apiVersion: apps/v1
   metadata:
     name: alice
     labels:
       app: alice
   spec:
     replicas: 1
+    selector:
+      matchLabels:
+        app: alice
     strategy:
       type: Recreate
       rollingUpdate: null
@@ -39,7 +43,7 @@ items:
       spec:
         hostname: alice
         containers:
-        - name: alice
+        - name: cordapp
           image: kirito37/corda4.3_image
           resources:
             limits:
@@ -60,9 +64,9 @@ items:
             mountPath: "/app/network-parameters"
             subPath: "network-parameters"
             readOnly: true
-          - name: node-config
+          - name: node-logs
             mountPath: "/app/logs"
-            readOnly: true
+            readOnly: false
           - name: node-certificates
             mountPath: "/app/certificates"
             readOnly: true
@@ -123,3 +127,6 @@ items:
         - name: cordapps-app
           secret:
             secretName: alice-cordapps-app
+        - name: node-logs
+          secret:
+            secretName: alice-node-logs
