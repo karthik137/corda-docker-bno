@@ -111,11 +111,11 @@ items:
             mountPath: "/app/cordapps/config/membership-service.conf"
             subPath: "membership-service.conf"
             readOnly: true
-          livenessProbe:
-            tcpSocket:
-              port: 10002
-            initialDelaySeconds: 15
-            periodSeconds: 20
+#          livenessProbe:
+#            tcpSocket:
+#              port: 10002
+#            initialDelaySeconds: 15
+#            periodSeconds: 20
         volumes:
         - name: node-config
           secret:
