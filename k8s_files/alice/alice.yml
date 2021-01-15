@@ -42,6 +42,22 @@ items:
           app: alice
       spec:
         hostname: alice
+        initContainers:
+
+        - name: copy-nodeinfo
+          image: kirito37/corda4.3_image
+          command: ['sh', '-c', 'cp -r /app/additional-node-infos /mnt/data/alice/']
+          volumeMounts:
+            - name: additional-node-infos
+              mountPath: /app/additional-node-infos
+            - name: task-pv-storage
+              mountPath: /mnt/data/alice
+        - name: volume-permissions
+          image: kirito37/corda4.3_image
+          command: ['sh', '-c', 'chmod -R g+rwX /mnt/data/alice']
+          volumeMounts:
+          - mountPath: /mnt/data/alice
+            name: task-pv-storage
         containers:
         - name: cordapp
           image: kirito37/corda4.3_image
@@ -64,16 +80,13 @@ items:
             mountPath: "/app/network-parameters"
             subPath: "network-parameters"
             readOnly: true
-          - name: node-log4j
-            mountPath: "/app/logs/log4j2.xml"
-            subPath: "log4j2.xml"
-            readOnly: false
+          - name: task-pv-storage
+            mountPath: "/app/logs"
           - name: node-certificates
             mountPath: "/app/certificates"
             readOnly: true
-          - name: additional-node-infos
+          - name: node-infos
             mountPath: "/app/additional-node-infos"
-            readOnly: false
           - name: cordapps
             mountPath: "/app/cordapps/membership-service-1.0.jar"
             subPath: "membership-service-1.0.jar"
@@ -128,6 +141,9 @@ items:
         - name: cordapps-app
           secret:
             secretName: alice-cordapps-app
-        - name: node-log4j
-          secret:
-            secretName: alice-node-log4j
+        - name: node-infos
+          hostPath:
+            path: /mnt/data/alice/additional-node-infos
+        - name: task-pv-storage
+          persistentVolumeClaim:
+            claimName: alice-pv-claim
